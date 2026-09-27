@@ -2,48 +2,48 @@ import { useState } from "react";
 import "./App.css";
 
 function App() {
+  const [stats, setStats] = useState({
+    totalRows: 0,
+    validRows: 0,
+    invalidRows: 0,
+    columns: 0,
+  });
 
-  const [file, setFile] = useState(null);
-  const [rows, setRows] = useState([]);
-  const [message, setMessage] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [columns, setColumns] = useState([]);
 
   const handleFileChange = (event) => {
     const selectedFile = event.target.files[0];
 
     if (!selectedFile) return;
 
-    if (!selectedFile.name.toLowerCase().endsWith(".csv")) {
-      setMessage("Please select a CSV file.");
-      return;
-    }
+    setStats({
+      totalRows: 0,
+      validRows: 0,
+      invalidRows: 0,
+      columns: 0,
+    });
 
-    setFile(selectedFile);
-    setRows([]);
-    setMessage("");
+    setColumns([]);
   };
 
   const uploadFile = async () => {
+    const input = document.querySelector('input[type="file"]');
+    const file = input?.files[0];
 
     if (!file) {
-      setMessage("Please select a CSV file first.");
+      alert("Please select a CSV file first.");
       return;
     }
 
-    setLoading(true);
-    setMessage("Uploading and processing...");
-
     const formData = new FormData();
-
     formData.append("file", file);
 
     try {
-
       const response = await fetch(
         "http://localhost:5000/api/upload",
         {
           method: "POST",
-          body: formData
+          body: formData,
         }
       );
 
@@ -53,50 +53,46 @@ function App() {
         throw new Error(data.message || "Upload failed");
       }
 
-      setRows(data.previewRows);
+      const transformedData = data.transformedData || [];
 
-      setMessage(
-        Upload successful! Showing ${data.previewRows.length} preview rows.
-      );
+      setStats({
+        totalRows: data.totalRows || 0,
+        validRows: data.validRows || 0,
+        invalidRows: data.invalidRows || 0,
+        columns:
+          transformedData.length > 0
+            ? Object.keys(transformedData[0]).length
+            : 0,
+      });
 
+      if (transformedData.length > 0) {
+        setColumns(Object.keys(transformedData[0]));
+      }
+
+      alert("Dataset processed successfully!");
     } catch (error) {
-
       console.error(error);
-
-      setMessage(
-        error.message || "Something went wrong."
-      );
-
-    } finally {
-
-      setLoading(false);
-
+      alert(error.message || "Something went wrong.");
     }
   };
 
   return (
-
     <div className="app">
 
       <header className="header">
-
         <h1>StreamWeaver</h1>
-
-        <p>
-          High-Throughput No-Code ETL Pipeline
-        </p>
-
+        <p>High-Throughput No-Code ETL Pipeline</p>
       </header>
-
 
       <main className="container">
 
+        {/* Upload Section */}
         <section className="upload-card">
 
           <h2>Upload Dataset</h2>
 
           <p>
-            Upload a CSV file to preview and process your dataset.
+            Upload a CSV file to process your dataset.
           </p>
 
           <input
@@ -105,114 +101,66 @@ function App() {
             onChange={handleFileChange}
           />
 
-          {file && (
-
-            <div className="file-info">
-
-              <strong>Selected File:</strong>
-
-              <span>{file.name}</span>
-
-              <span>
-                {(file.size / 1024).toFixed(2)} KB
-              </span>
-
-            </div>
-
-          )}
-
-          <button
-            onClick={uploadFile}
-            disabled={!file || loading}
-          >
-            {loading ? "Processing..." : "Upload CSV"}
+          <button onClick={uploadFile}>
+            Process Dataset
           </button>
-
-          {message && (
-
-            <p className="message">
-              {message}
-            </p>
-
-          )}
 
         </section>
 
+        {/* Dashboard */}
+        <section className="dashboard">
 
-        {rows.length > 0 && (
+          <h2>Dataset Dashboard</h2>
 
-          <section className="preview-card">
+          <div className="stats-grid">
 
-            <div className="preview-header">
-
-              <div>
-
-                <h2>CSV Preview</h2>
-
-                <p>
-                  Showing first {rows.length} rows
-                </p>
-
-              </div>
-
+            <div className="stat-card">
+              <h3>Total Rows</h3>
+              <strong>{stats.totalRows}</strong>
             </div>
 
+            <div className="stat-card">
+              <h3>Valid Rows</h3>
+              <strong>{stats.validRows}</strong>
+            </div>
 
-            <div className="table-container">
+            <div className="stat-card">
+              <h3>Invalid Rows</h3>
+              <strong>{stats.invalidRows}</strong>
+            </div>
 
-              <table>
+            <div className="stat-card">
+              <h3>Columns</h3>
+              <strong>{stats.columns}</strong>
+            </div>
 
-                <thead>
+          </div>
 
-                  <tr>
+        </section>
 
-                    {Object.keys(rows[0]).map((column) => (
+        {/* Dataset Schema */}
+        {columns.length > 0 && (
+          <section className="preview-card">
 
-                      <th key={column}>
-                        {column}
-                      </th>
+            <h2>Dataset Schema</h2>
 
-                    ))}
+            <div className="schema-list">
 
-                  </tr>
-
-                </thead>
-
-
-                <tbody>
-
-                  {rows.map((row, index) => (
-
-                    <tr key={index}>
-
-                      {Object.values(row).map(
-                        (value, columnIndex) => (
-
-                          <td key={columnIndex}>
-                            {value}
-                          </td>
-
-                        )
-                      )}
-
-                    </tr>
-
-                  ))}
-
-                </tbody>
-
-              </table>
+              {columns.map((column, index) => (
+                <div className="schema-item" key={index}>
+                  <strong>{index + 1}.</strong>
+                  <span>{column}</span>
+                </div>
+              ))}
 
             </div>
 
           </section>
-
         )}
 
       </main>
 
     </div>
-
   );
 }
 

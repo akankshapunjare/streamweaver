@@ -113,3 +113,61 @@ th {
 tr:hover {
   background: #f8fafc;
 }
+.dashboard {
+  background: white;
+  border-radius: 12px;
+  padding: 25px;
+  margin-bottom: 25px;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+}
+
+.dashboard h2 {
+  margin-top: 0;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+}
+
+.stat-card {
+  padding: 20px;
+  border-radius: 10px;
+  background: #f8fafc;
+  border: 1px solid #e5e7eb;
+}
+
+.stat-card h3 {
+  margin: 0 0 10px;
+  font-size: 15px;
+  color: #64748b;
+}
+
+.stat-card strong {
+  font-size: 30px;
+}
+
+.schema-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.schema-item {
+  padding: 10px 15px;
+  background: #f1f5f9;
+  border-radius: 8px;
+}
+
+@media (max-width: 800px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 500px) {
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+}
