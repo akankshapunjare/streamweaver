@@ -26,7 +26,39 @@ function App() {
 
     setColumns([]);
   };
+const downloadProcessedData = () => {
+  if (processedData.length === 0) {
+    alert("No processed data available.");
+    return;
+  }
 
+  const headers = Object.keys(processedData[0]);
+
+  const csvContent = [
+    headers.join(","),
+    ...processedData.map((row) =>
+      headers
+        .map((header) => "${String(row[header]).replace(/"/g, '""')}")
+        .join(",")
+    ),
+  ].join("\n");
+
+  const blob = new Blob([csvContent], {
+    type: "text/csv;charset=utf-8;",
+  });
+
+  const url = URL.createObjectURL(blob);
+
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = "streamweaver_processed.csv";
+
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+
+  URL.revokeObjectURL(url);
+};
   const uploadFile = async () => {
     const input = document.querySelector('input[type="file"]');
     const file = input?.files[0];
@@ -163,7 +195,9 @@ function App() {
   <section className="preview-card">
 
     <h2>Processed Data Preview</h2>
-
+<button onClick={downloadProcessedData}>
+  Download Processed CSV
+</button>
     <p>
       Showing processed dataset rows
     </p>
