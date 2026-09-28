@@ -46,6 +46,10 @@ app.post("/api/upload", upload.single("file"), (req, res) => {
     const rows = [];
     const validationErrors = [];
 
+    const removeEmptyRows = req.body.removeEmptyRows !== "false";
+    const trimSpaces = req.body.trimSpaces !== "false";
+    const convertNumbers = req.body.convertNumbers !== "false";
+
     let totalRows = 0;
 
     fs.createReadStream(filePath)
@@ -54,20 +58,23 @@ app.post("/api/upload", upload.single("file"), (req, res) => {
 
             totalRows++;
 
-            // Basic validation
-            if (!row || Object.keys(row).length === 0) {
+            const isEmptyRow =
+                !row ||
+                Object.values(row).every(
+                    (value) => String(value).trim() === ""
+                );
+
+            if (isEmptyRow) {
 
                 validationErrors.push({
                     row: totalRows,
                     error: "Empty row"
                 });
 
-                return;
+                if (removeEmptyRows) {
+                    return;
+                }
             }
-
-            // =============================
-            // Data Transformation
-            // =============================
 
             const transformedRow = {};
 
@@ -80,44 +87,46 @@ app.post("/api/upload", upload.single("file"), (req, res) => {
 
                 let value = row[key];
 
-                // Convert numbers
-                if (value !== "" && !isNaN(value)) {
-                    value = Number(value);
+                if (trimSpaces && typeof value === "string") {
+                    value = value.trim();
                 }
 
-                // Remove extra spaces from text
-                if (typeof value === "string") {
-                    value = value.trim();
+                if (
+                    convertNumbers &&
+                    value !== "" &&
+                    !isNaN(value)
+                ) {
+                    value = Number(value);
                 }
 
                 transformedRow[cleanKey] = value;
             });
 
-            // Store transformed data
             if (rows.length < 1000) {
                 rows.push(transformedRow);
             }
         })
         .on("end", () => {
 
-            // Delete temporary uploaded file
             fs.unlink(filePath, (error) => {
-
                 if (error) {
                     console.error("File cleanup error:", error);
                 }
-
             });
 
             res.json({
 
-                message: "CSV uploaded and transformed successfully",
+                message:
+                    "CSV uploaded and transformed successfully",
 
-                fileName: req.file.originalname,
+                fileName:
+                    req.file.originalname,
 
-                fileSize: req.file.size,
+                fileSize:
+                    req.file.size,
 
-                totalRows: totalRows,
+                totalRows:
+                    totalRows,
 
                 validRows:
                     totalRows - validationErrors.length,
@@ -130,7 +139,6 @@ app.post("/api/upload", upload.single("file"), (req, res) => {
 
                 transformedData:
                     rows
-
             });
         })
         .on("error", (error) => {
@@ -152,7 +160,7 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
 
     console.log(
-        `StreamWeaver Backend running on port ${PORT}`
+        StreamWeaver Backend running on port ${PORT}
     );
 
 });
