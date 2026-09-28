@@ -10,6 +10,7 @@ function App() {
   });
 
   const [columns, setColumns] = useState([]);
+  const [processedData, setProcessedData] = useState([]);
 
   const handleFileChange = (event) => {
     const selectedFile = event.target.files[0];
@@ -68,6 +69,7 @@ function App() {
       if (transformedData.length > 0) {
         setColumns(Object.keys(transformedData[0]));
       }
+      setProcessedData(transformedData);
 
       alert("Dataset processed successfully!");
     } catch (error) {
@@ -157,7 +159,47 @@ function App() {
 
           </section>
         )}
+{processedData.length > 0 && (
+  <section className="preview-card">
 
+    <h2>Processed Data Preview</h2>
+
+    <p>
+      Showing processed dataset rows
+    </p>
+
+    <div className="table-container">
+
+      <table>
+
+        <thead>
+          <tr>
+            {Object.keys(processedData[0]).map((column) => (
+              <th key={column}>
+                {column}
+              </th>
+            ))}
+          </tr>
+        </thead>
+
+        <tbody>
+          {processedData.map((row, index) => (
+            <tr key={index}>
+              {Object.values(row).map((value, columnIndex) => (
+                <td key={columnIndex}>
+                  {String(value)}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </section>
+)}
       </main>
 
     </div>
