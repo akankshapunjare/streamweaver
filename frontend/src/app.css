@@ -123,10 +123,11 @@ button:disabled {
 
 .message {
   margin-top: 15px;
-  padding: 12px;
+  padding: 12px 15px;
   border-radius: 8px;
   background: #eff6ff;
   color: #1d4ed8;
+  border: 1px solid #bfdbfe;
   font-weight: 600;
 }
 
