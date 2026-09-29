@@ -6,6 +6,7 @@ function App() {
   const [file, setFile] = useState(null);
 
   const [processedData, setProcessedData] = useState([]);
+  const [validationErrors, setValidationErrors] = useState([]);
 
   const [stats, setStats] = useState({
     totalRows: 0,
@@ -46,7 +47,7 @@ function App() {
       columns: 0,
     });
 
-    setMessage(Selected: ${selectedFile.name});
+    setMessage(`Selected: ${selectedFile.name}`);
   };
 
   // =============================
@@ -104,6 +105,7 @@ function App() {
         data.transformedData || [];
 
       setProcessedData(transformedData);
+      setValidationErrors(data.validationErrors || []);
 
       setStats({
         totalRows: data.totalRows || 0,
@@ -123,7 +125,7 @@ function App() {
       }
 
       setMessage(
-        Dataset processed successfully! ${transformedData.length} rows ready.
+        `Dataset processed successfully! ${transformedData.length} rows ready.`
       );
 
     } catch (error) {
@@ -423,6 +425,66 @@ function App() {
           </section>
 
         )}
+        {/* Validation Report */}
+
+<section className="preview-card">
+
+  <h2>Validation Report</h2>
+
+  <div className="stats-grid">
+
+    <div className="stat-card">
+      <h3>Total Rows</h3>
+      <strong>{stats.totalRows}</strong>
+    </div>
+
+    <div className="stat-card">
+      <h3>Valid Rows</h3>
+      <strong>{stats.validRows}</strong>
+    </div>
+
+    <div className="stat-card">
+      <h3>Invalid Rows</h3>
+      <strong>{stats.invalidRows}</strong>
+    </div>
+
+  </div>
+
+  {validationErrors.length > 0 ? (
+
+    <div style={{ marginTop: "20px" }}>
+
+      <h3>Validation Errors</h3>
+
+      {validationErrors.map((error, index) => (
+
+        <div
+          key={index}
+          style={{
+            padding: "10px",
+            marginBottom: "8px",
+            background: "#fef2f2",
+            borderRadius: "6px"
+          }}
+        >
+          <strong>Row {error.row}</strong>
+          {" → "}
+          {error.error}
+        </div>
+
+      ))}
+
+    </div>
+
+  ) : (
+
+    <p style={{ marginTop: "20px", fontWeight: "bold" }}>
+      No validation errors found.
+    </p>
+
+  )}
+
+</section>
 
         {/* Processed Data */}
 
