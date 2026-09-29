@@ -7,6 +7,7 @@ function App() {
 
   const [processedData, setProcessedData] = useState([]);
   const [validationErrors, setValidationErrors] = useState([]);
+  const [fileName, setFileName] = useState("");
 
   const [stats, setStats] = useState({
     totalRows: 0,
@@ -37,6 +38,7 @@ function App() {
     }
 
     setFile(selectedFile);
+    setFileName(selectedFile.name);
     setProcessedData([]);
     setColumns([]);
 
@@ -353,6 +355,7 @@ function App() {
 
             </div>
 
+
             <div className="stat-card">
 
               <h3>Valid Rows</h3>
@@ -386,6 +389,43 @@ function App() {
           </div>
 
         </section>
+        {/* Processing Summary */}
+
+<section className="preview-card">
+
+  <h2>Processing Summary</h2>
+
+  <div className="schema-list">
+
+    <div className="schema-item">
+      <strong>File:</strong>
+      <span>{fileName || "No file selected"}</span>
+    </div>
+
+    <div className="schema-item">
+      <strong>Empty Rows:</strong>
+      <span>
+        {removeEmptyRows ? "Removed" : "Kept"}
+      </span>
+    </div>
+
+    <div className="schema-item">
+      <strong>Spaces:</strong>
+      <span>
+        {trimSpaces ? "Trimmed" : "Original"}
+      </span>
+    </div>
+
+    <div className="schema-item">
+      <strong>Numbers:</strong>
+      <span>
+        {convertNumbers ? "Converted" : "Original"}
+      </span>
+    </div>
+
+  </div>
+
+</section>
 
         {/* Dataset Schema */}
 
