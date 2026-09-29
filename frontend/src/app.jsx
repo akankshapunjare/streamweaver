@@ -32,6 +32,16 @@ function App() {
   const handleFileChange = (event) => {
 
     const selectedFile = event.target.files[0];
+    if (!selectedFile.name.toLowerCase().endsWith(".csv")) {
+  setMessage("Please select a CSV file only.");
+  setFile(null);
+  return;
+}
+if (selectedFile.size > 10 * 1024 * 1024) {
+  setMessage("File size must be less than 10 MB.");
+  setFile(null);
+  return;
+}
 
     if (!selectedFile) {
       return;
