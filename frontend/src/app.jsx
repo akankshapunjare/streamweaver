@@ -344,7 +344,17 @@ if (selectedFile.size > 10 * 1024 * 1024) {
             Convert Numbers
 
           </label>
-
+<button
+  type="button"
+  onClick={() => {
+    setRemoveEmptyRows(true);
+    setTrimSpaces(true);
+    setConvertNumbers(true);
+    setMessage("Pipeline controls reset to default.");
+  }}
+>
+  Reset Controls
+</button>
         </section>
 
         {/* Dashboard */}
