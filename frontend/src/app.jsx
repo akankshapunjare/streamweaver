@@ -6,6 +6,7 @@ function App() {
   const [file, setFile] = useState(null);
 
   const [processedData, setProcessedData] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
   const [validationErrors, setValidationErrors] = useState([]);
   const [fileName, setFileName] = useState("");
 
@@ -570,7 +571,24 @@ if (selectedFile.size > 10 * 1024 * 1024) {
                 <p>
                   Showing processed dataset rows
                 </p>
+<div className="data-search">
+  <input
+    type="text"
+    placeholder="Search processed data..."
+    value={searchTerm}
+    onChange={(e) => setSearchTerm(e.target.value)}
+  />
 
+  <span>
+    {processedData.filter((row) =>
+      Object.values(row).some((value) =>
+        String(value)
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase())
+      )
+    ).length} rows
+  </span>
+</div>
               </div>
 
               <button
@@ -607,9 +625,15 @@ if (selectedFile.size > 10 * 1024 * 1024) {
 
                 <tbody>
 
-                  {processedData.map(
-                    (row, index) => (
-
+{processedData
+  .filter((row) =>
+    Object.values(row).some((value) =>
+      String(value)
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase())
+    )
+  )
+  .map((row, index) => (
                       <tr key={index}>
 
                         {Object.values(row).map(
