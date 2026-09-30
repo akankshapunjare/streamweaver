@@ -1,10 +1,10 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import "./App.css";
 
 function App() {
 
   const [file, setFile] = useState(null);
-
+  const fileInputRef = useRef(null);
   const [processedData, setProcessedData] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [validationErrors, setValidationErrors] = useState([]);
@@ -69,17 +69,21 @@ console.log("FILE SELECTED:", selectedFile);
 
   const uploadFile = async () => {
 
-    if (!file) {
-      setMessage("Please select a CSV file first.");
-      return;
-    }
+  const selectedFile =
+    file || fileInputRef.current?.files?.[0];
 
-    setLoading(true);
+  if (!selectedFile) {
+    setMessage("Please select a CSV file first.");
+    return;
+  }
+
+  setFile(selectedFile);
+  setLoading(true);
     setMessage("Processing dataset...");
 
     const formData = new FormData();
 
-    formData.append("file", file);
+    formData.append("file", selectedFile);
 
     formData.append(
       "removeEmptyRows",
@@ -243,11 +247,12 @@ console.log("FILE SELECTED:", selectedFile);
             Upload a CSV file to process your dataset.
           </p>
 
-          <input
-            type="file"
-            accept=".csv"
-            onChange={handleFileChange}
-          />
+<input
+  ref={fileInputRef}
+  type="file"
+  accept=".csv"
+  onChange={handleFileChange}
+/>
 
           {file && (
 
@@ -626,27 +631,7 @@ console.log("FILE SELECTED:", selectedFile);
 
                 <tbody>
 
-processedData.filter((row) =>
-  Object.values(row).some((value) =>
-    String(value)
-      .toLowerCase()
-      .includes(searchTerm.toLowerCase())
-  )
-).length === 0 ? (
-  <tr>
-    <td
-      colSpan={Object.keys(processedData[0]).length}
-      style={{
-        textAlign: "center",
-        padding: "20px",
-        fontWeight: "600"
-      }}
-    >
-      No matching records found.
-    </td>
-  </tr>
-) : (
- {processedData.filter((row) =>
+{processedData.filter((row) =>
   Object.values(row).some((value) =>
     String(value)
       .toLowerCase()
