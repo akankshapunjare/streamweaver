@@ -31,38 +31,38 @@ function App() {
   // =============================
 
   const handleFileChange = (event) => {
+  const selectedFile = event.target.files[0];
+console.log("FILE SELECTED:", selectedFile);
+  if (!selectedFile) {
+    return;
+  }
 
-    const selectedFile = event.target.files[0];
-    if (!selectedFile.name.toLowerCase().endsWith(".csv")) {
-  setMessage("Please select a CSV file only.");
-  setFile(null);
-  return;
-}
-if (selectedFile.size > 10 * 1024 * 1024) {
-  setMessage("File size must be less than 10 MB.");
-  setFile(null);
-  return;
-}
+  if (!selectedFile.name.toLowerCase().endsWith(".csv")) {
+    setMessage("Please select a CSV file only.");
+    setFile(null);
+    return;
+  }
 
-    if (!selectedFile) {
-      return;
-    }
+  if (selectedFile.size > 10 * 1024 * 1024) {
+    setMessage("File size must be less than 10 MB.");
+    setFile(null);
+    return;
+  }
 
-    setFile(selectedFile);
-    setFileName(selectedFile.name);
-    setProcessedData([]);
-    setColumns([]);
+  setFile(selectedFile);
+  setFileName(selectedFile.name);
+  setProcessedData([]);
+  setColumns([]);
 
-    setStats({
-      totalRows: 0,
-      validRows: 0,
-      invalidRows: 0,
-      columns: 0,
-    });
+  setStats({
+    totalRows: 0,
+    validRows: 0,
+    invalidRows: 0,
+    columns: 0,
+  });
 
-    setMessage(`Selected: ${selectedFile.name}`);
-  };
-
+  setMessage(`Selected: ${selectedFile.name}`);
+};
   // =============================
   // Process Dataset
   // =============================
@@ -589,6 +589,7 @@ if (selectedFile.size > 10 * 1024 * 1024) {
     ).length} rows
   </span>
 </div>
+
               </div>
 
               <button
