@@ -405,7 +405,14 @@ if (selectedFile.size > 10 * 1024 * 1024) {
               </strong>
 
             </div>
-
+<div className="stat-card">
+  <h3>Valid %</h3>
+  <strong>
+    {stats.totalRows > 0
+      ? ((stats.validRows / stats.totalRows) * 100).toFixed(1)
+      : 0}%
+  </strong>
+</div>
           </div>
 
         </section>
