@@ -282,3 +282,30 @@ tr:hover {
     width: 100%;
   }
 }
+.data-search {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 18px 0;
+}
+
+.data-search input {
+  flex: 1;
+  padding: 11px 14px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 14px;
+  outline: none;
+}
+
+.data-search input:focus {
+  border-color: #6366f1;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+.data-search span {
+  white-space: nowrap;
+  font-size: 14px;
+  font-weight: 600;
+  color: #4b5563;
+}
