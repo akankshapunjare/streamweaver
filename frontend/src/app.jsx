@@ -626,31 +626,64 @@ console.log("FILE SELECTED:", selectedFile);
 
                 <tbody>
 
-{processedData
-  .filter((row) =>
-    Object.values(row).some((value) =>
-      String(value)
-        .toLowerCase()
-        .includes(searchTerm.toLowerCase())
-    )
+processedData.filter((row) =>
+  Object.values(row).some((value) =>
+    String(value)
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase())
   )
-  .map((row, index) => (
-                      <tr key={index}>
-
-                        {Object.values(row).map(
-                          (value, columnIndex) => (
-
-                            <td key={columnIndex}>
-                              {String(value)}
-                            </td>
-
-                          )
-                        )}
-
-                      </tr>
-
-                    )
-                  )}
+).length === 0 ? (
+  <tr>
+    <td
+      colSpan={Object.keys(processedData[0]).length}
+      style={{
+        textAlign: "center",
+        padding: "20px",
+        fontWeight: "600"
+      }}
+    >
+      No matching records found.
+    </td>
+  </tr>
+) : (
+ {processedData.filter((row) =>
+  Object.values(row).some((value) =>
+    String(value)
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase())
+  )
+).length === 0 ? (
+  <tr>
+    <td
+      colSpan={Object.keys(processedData[0]).length}
+      style={{
+        textAlign: "center",
+        padding: "20px",
+        fontWeight: "600"
+      }}
+    >
+      No matching records found.
+    </td>
+  </tr>
+) : (
+  processedData
+    .filter((row) =>
+      Object.values(row).some((value) =>
+        String(value)
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase())
+      )
+    )
+    .map((row, index) => (
+      <tr key={index}>
+        {Object.values(row).map((value, columnIndex) => (
+          <td key={columnIndex}>
+            {String(value)}
+          </td>
+        ))}
+      </tr>
+    ))
+)}
 
                 </tbody>
 
